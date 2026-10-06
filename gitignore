@@ -1,0 +1,6 @@
+build/
+dist/
+*.private.xml
+*.pfx
+*.p12
+*.exe
