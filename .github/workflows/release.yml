@@ -45,14 +45,13 @@ jobs:
 
       - name: Stop if this version was already released
         shell: powershell
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
-          gh release view '${{ steps.version.outputs.tag }}' *> $null
-          if ($LASTEXITCODE -eq 0) {
-            throw "Release ${{ steps.version.outputs.tag }} already exists. Use a higher version number."
+          $tag = '${{ steps.version.outputs.tag }}'
+          $found = git ls-remote --tags origin "refs/tags/$tag"
+          if ($found) {
+            throw "Version $tag was already released. Use a higher version number."
           }
-          $global:LASTEXITCODE = 0
+          Write-Host "Version $tag has not been released yet. Continuing."
 
       # Windows PowerShell 5.1 (not pwsh) so signing behaves exactly as on your PC.
       - name: Build and sign
